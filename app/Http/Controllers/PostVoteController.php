@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\ValidationErrorException;
 use App\Http\Resources\Post as PostResource;
 use App\Http\Resources\VoteCollection;
+use App\Notifications\PostVoted;
 use App\Post;
 use App\Vote;
 use Illuminate\Http\Request;
@@ -31,6 +32,8 @@ class PostVoteController extends Controller
 
             $vote->score = $request->score;
             $vote->save();
+
+            $vote->post->user->notify(new PostVoted($vote));
         }
 
         $post->refresh();
