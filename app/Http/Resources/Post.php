@@ -21,12 +21,12 @@ class Post extends JsonResource
                 'type' => 'posts',
                 'post_id' => $this->id,
                 'attributes' => [
-                    'posted_by' => new UserResource($this->user),
                     'body' => $this->body,
-                    'image' => $this->image,
+                    'image' => $this->image ? url($this->image) : null,
                     'posted_at' => $this->created_at->diffForHumans(),
                     'score' => Vote::where('post_id', $this->id)->sum('score'),
                     'user_voted' => optional(Vote::where('post_id', $this->id)->where('user_id', auth()->user()->id)->get()->first())->score,
+                    'posted_by' => new UserResource($this->user),
                     'votes' => new VoteCollection($this->votes),
                     'comments' => new CommentCollection($this->comments)
                 ]

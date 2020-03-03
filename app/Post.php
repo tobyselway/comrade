@@ -14,7 +14,7 @@ class Post extends Model
      * @var array
      */
     protected $fillable = [
-        'body'
+        'body', 'image'
     ];
 
     protected static function boot()

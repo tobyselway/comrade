@@ -7,6 +7,8 @@ use App\Http\Resources\Post as PostResource;
 use App\Http\Resources\PostCollection;
 use App\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class PostController extends Controller
 {
@@ -30,10 +32,26 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'body' => ''
+            'body' => 'required',
+            'image' => '',
+            'width' => '',
+            'height' => ''
         ]);
 
-        $post = $request->user()->posts()->create($data);
+        $image = null;
+
+        if(isset($data['image'])) {
+            Storage::makeDirectory('public/post-images');
+            $image = 'storage/' . $data['image']->store('post-images', 'public');
+            Image::make($data['image'])
+                ->fit($data['width'], $data['height'])
+                ->save(storage_path('app/public/post-images/' . $data['image']->hashName()));
+        }
+
+        $post = $request->user()->posts()->create([
+            'body' => $data['body'],
+            'image' => $image
+        ]);
 
         return new PostResource($post);
     }

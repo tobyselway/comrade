@@ -97,7 +97,7 @@ class FriendsTest extends TestCase
         $friendRequest = \App\Friend::first();
         $this->assertNotNull($friendRequest->confirmed_at);
         $this->assertInstanceOf(Carbon::class, $friendRequest->confirmed_at);
-        $this->assertEquals(now()->startOfSecond(), $friendRequest->confirmed_at);
+        $this->assertEquals(now()->startOfMinute()->startOfSecond(), $friendRequest->confirmed_at->startOfMinute()->startOfSecond());
         $this->assertEquals(1, $friendRequest->status);
         $response->assertJson([
             'data' => [

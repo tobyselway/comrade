@@ -1,3 +1,5 @@
+import user from './user';
+
 const state = {
     posts: null,
     postsStatus: null,
@@ -51,8 +53,9 @@ const actions = {
             });
     },
     upvotePost({commit, state}, data) {
-        let score = (state.posts.data[data.postKey].data.attributes.user_voted === 1) ? 0 : 1;
-        commit('quickScore', { postKey: data.postKey, score: (score === 0 ? -1 : 1), user_voted: score });
+        let userVoted = state.posts.data[data.postKey].data.attributes.user_voted;
+        let score = (userVoted === 1) ? 0 : 1;
+        commit('quickScoreUp', { postKey: data.postKey, user_voted: userVoted });
         axios.post('/api/posts/' + data.postId + '/vote', { score: score })
             .then(res => {
                 commit('updatePost', { post: res.data, postKey: data.postKey });
@@ -60,8 +63,9 @@ const actions = {
             .catch(err => {});
     },
     downvotePost({commit, state}, data) {
-        let score = (state.posts.data[data.postKey].data.attributes.user_voted === -1) ? 0 : -1;
-        commit('quickScore', { postKey: data.postKey, score: (score === 0 ? 1 : -1), user_voted: score });
+        let userVoted = state.posts.data[data.postKey].data.attributes.user_voted;
+        let score = (userVoted === -1) ? 0 : -1;
+        commit('quickScoreDown', { postKey: data.postKey, user_voted: userVoted });
         axios.post('/api/posts/' + data.postId + '/vote', { score: score })
             .then(res => {
                 commit('updatePost', { post: res.data, postKey: data.postKey });
@@ -96,9 +100,53 @@ const mutations = {
     updatePost(state, data) {
         state.posts.data[data.postKey].data = data.post.data;
     },
-    quickScore(state, data) {
-        state.posts.data[data.postKey].data.attributes.user_voted = data.user_voted;
-        state.posts.data[data.postKey].data.attributes.score = parseInt(state.posts.data[data.postKey].data.attributes.score) + parseInt(data.score);
+    quickScoreDown(state, data) {
+        let userVoted = data.user_voted;
+        let score = parseInt(state.posts.data[data.postKey].data.attributes.score);
+
+        switch(userVoted) {
+            case null:
+            case 0: // User is downvoting for the first time
+                score--;
+                userVoted = -1;
+                break;
+            case -1: // User is removing downvote
+                score++;
+                userVoted = 0;
+                break;
+            case 1: // User is switching upvote to downvote
+                score -= 2;
+                userVoted = -1;
+                break;
+        }
+
+        state.posts.data[data.postKey].data.attributes.user_voted = userVoted;
+        state.posts.data[data.postKey].data.attributes.score = score;
+        state.posts.data[data.postKey].data.tmp_vote = true;
+    },
+    quickScoreUp(state, data) {
+        let userVoted = data.user_voted;
+        let score = parseInt(state.posts.data[data.postKey].data.attributes.score);
+
+        switch(userVoted) {
+            case null:
+            case 0: // User is upvoting for the first time
+                score++;
+                userVoted = 1;
+                break;
+            case 1: // User is removing upvote
+                score--;
+                userVoted = 0;
+                break;
+            case -1: // User is switching downvote to upvote
+                score += 2;
+                userVoted = 1;
+                break;
+        }
+
+        state.posts.data[data.postKey].data.attributes.user_voted = userVoted;
+        state.posts.data[data.postKey].data.attributes.score = score;
+        state.posts.data[data.postKey].data.tmp_vote = true;
     }
 };
 

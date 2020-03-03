@@ -67,7 +67,7 @@ class User extends Authenticatable
             ->orderByDesc('id')
             ->where('location', 'cover')
             ->withDefault(function($userImage) {
-                $userImage->path = '../default/cover.jpg';
+                $userImage->path = 'default/cover.png';
             });
     }
 
@@ -76,7 +76,7 @@ class User extends Authenticatable
             ->orderByDesc('id')
             ->where('location', 'profile')
             ->withDefault(function($userImage) {
-                $userImage->path = '../default/profile.jpg';
+                $userImage->path = 'default/profile.png';
             });
     }
 

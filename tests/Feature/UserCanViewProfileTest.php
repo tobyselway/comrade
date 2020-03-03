@@ -39,8 +39,6 @@ class UserCanViewProfileTest extends TestCase
     /** @test */
     public function a_user_can_fetch_posts_for_a_profile()
     {
-        $this->withoutExceptionHandling();
-
         $this->actingAs($user = factory(User::class)->create(), 'api');
         $post = factory(Post::class)->create(['user_id' => $user->id]);
 
@@ -54,7 +52,7 @@ class UserCanViewProfileTest extends TestCase
                             'post_id' => $post->id,
                             'attributes' => [
                                 'body' => $post->body,
-                                'image' => $post->image,
+                                'image' => url($post->image),
                                 'posted_at' => $post->created_at->diffForHumans(),
                                 'score' => $post->score,
                                 'posted_by' => [
