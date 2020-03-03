@@ -51,8 +51,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if($exception instanceof ValidationException) {
-            throw new ValidationErrorException(json_encode($exception->errors()));
+        if(!$request->is('login') && !$request->is('register')) {
+            if($exception instanceof ValidationException) {
+                throw new ValidationErrorException(json_encode($exception->errors()));
+            }
         }
 
         return parent::render($request, $exception);
