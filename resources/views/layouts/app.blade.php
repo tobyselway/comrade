@@ -24,6 +24,10 @@
 </head>
 <body class="bg-gray-200 text-gray-800 antialiased font-sans">
 
+    <form id="logout-form" action="{{ route('logout') }}" method="post" class="hidden">
+        @csrf
+    </form>
+
     <div id="app">
 
         <main class="h-screen">

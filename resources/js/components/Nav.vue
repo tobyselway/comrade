@@ -34,24 +34,50 @@
                 <i class="icofont-notification text-3xl text-gray-500 group-hover:text-gray-700"></i>
             </router-link>
         </div>
-        <div class="w-1/3 flex justify-end items-center h-full">
-            <button class="h-full flex items-center text-gray-500 hover:text-gray-700 focus:outline-none">
+        <div class="w-1/3 flex justify-end items-center h-full relative">
+            <button @click="options = !options" class="h-full flex items-center text-gray-500 hover:text-gray-700 focus:outline-none" :class="[options ? 'text-gray-700' : '', loggingOut ? 'z-30' : 'z-50']">
                 <i class="icofont-gear text-3xl"></i>
             </button>
+            <div v-if="options && !loggingOut" class="absolute top-0 mt-10 mr-2 right-0 px-0 py-2 rounded bg-white border z-50">
+                <button class="w-full py-1 px-6 hover:bg-gray-200 active:bg-gray-300 focus:outline-none">Help</button>
+                <button class="w-full py-1 px-6 hover:bg-gray-200 active:bg-gray-300 focus:outline-none">Settings</button>
+                <hr class="my-2">
+                <button @click.prevent="logout()" class="w-full py-1 px-6 hover:bg-gray-200 active:bg-gray-300 focus:outline-none">Logout</button>
+            </div>
+        </div>
+        <div v-if="options && !loggingOut" @click="options = false" class="absolute top-0 left-0 w-screen h-screen bg-black opacity-25 z-40"></div>
+        <div v-if="loggingOut" class="absolute top-0 left-0 w-screen h-screen bg-black opacity-75 z-40 flex flex-col items-center justify-center">
+            <Spinner></Spinner>
+            <div class="text-gray-200 text-2xl mt-3">Logging out...</div>
         </div>
     </div>
 </template>
 
 <script>
-    import { mapGetters} from 'vuex';
+    import { mapGetters } from 'vuex';
+    import Spinner from './Spinner';
+
 
     export default {
         name: "Nav",
 
+        components: {
+            Spinner
+        },
+
         data() {
             return {
                 appBranding: process.env.MIX_APP_BRANDING,
-                appName: process.env.MIX_APP_NAME || ""
+                appName: process.env.MIX_APP_NAME || "",
+                options: false,
+                loggingOut: false
+            }
+        },
+
+        methods: {
+            logout()  {
+                this.loggingOut = true;
+                document.getElementById('logout-form').submit();
             }
         },
 
