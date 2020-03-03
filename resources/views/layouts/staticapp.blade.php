@@ -39,9 +39,9 @@
                 </a>
 
                 <div class="h-full flex items-center">
-                    <a href="{{ route('login') }}" class="h-full flex items-center m-0 px-3 border-b-2 focus:outline-none {{ Route::is('login') ? 'border-blue-500' : 'border-white hover:border-gray-500' }}">Login</a>
+                    <a href="{{ route('login') }}" class="h-full flex items-center m-0 px-3 border-b-2 focus:outline-none {{ Route::is('login') ? 'border-red-400' : 'border-white hover:border-gray-400' }}">Login</a>
                     @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="h-full flex items-center m-0 px-3 border-b-2 focus:outline-none {{ Route::is('register') ? 'border-blue-500' : 'border-white hover:border-gray-500' }}">Register</a>
+                        <a href="{{ route('register') }}" class="h-full flex items-center m-0 px-3 border-b-2 focus:outline-none {{ Route::is('register') ? 'border-red-400' : 'border-white hover:border-gray-400' }}">Register</a>
                     @endif
                 </div>
             </div>
