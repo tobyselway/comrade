@@ -5,8 +5,13 @@
             <div v-if="state === 'loading'" class="flex flex-col items-center">
                 <Spinner></Spinner>
             </div>
-            <div v-if="state === 'success'" v-for="notification in notifications" class="mb-3">
-                <Notification :notification="notification"></Notification>
+            <div v-if="state === 'success'">
+                <div v-if="!notifications">
+                    You have no notifications.
+                </div>
+                <div v-else v-for="notification in notifications" class="mb-3">
+                    <Notification :notification="notification"></Notification>
+                </div>
             </div>
             <div v-if="state === 'error'" class="flex flex-col items-center">
                 Error retrieving notifications.

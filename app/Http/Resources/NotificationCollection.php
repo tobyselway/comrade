@@ -16,6 +16,7 @@ class NotificationCollection extends ResourceCollection
     {
         return [
             'data' => $this->collection,
+            'notification_count' => $this->count(),
             'links' => [
                 'self' => url('/notifications')
             ]

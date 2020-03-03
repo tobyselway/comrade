@@ -6,12 +6,11 @@
         </div>
         <div class="p-2 m-1">{{ notification.data.attributes.data.body }}</div>
         <div v-if="notification.data.attributes.type === 'Comment on Post'" class="px-5 mb-2 text-sm text-gray-600">{{ notification.data.attributes.data.comment }}</div>
-        <!--
+
         <div class="flex items-center justify-between text-xs px-1 mb-1">
-            <button class="px-2 py-1 rounded focus:outline-none bg-blue-200 hover:bg-blue-300 active:bg-blue-400">View</button>
-            <button class="px-2 py-1 rounded focus:outline-none bg-gray-200 hover:bg-gray-300 active:bg-gray-400">Dismiss</button>
+            <router-link :to="notification.data.attributes.links.user" v-if="notification.data.attributes.type === 'Friendship Request'" class="px-2 py-1 rounded focus:outline-none bg-blue-200 hover:bg-blue-300 active:bg-blue-400">View</router-link>
+            <!--<button class="px-2 py-1 rounded focus:outline-none bg-gray-200 hover:bg-gray-300 active:bg-gray-400">Dismiss</button>-->
         </div>
-        -->
     </div>
 </template>
 
