@@ -21,35 +21,36 @@
                 <div class="group cursor-pointer pt-1" @click="selectedContact = null">
                     <i class="icofont-simple-left text-3xl text-gray-500 group-hover:text-gray-700"></i>
                 </div>
-                <h2 class="ml-2 text-2xl font-bold tracking-tight">{{ selectedContact.data.attributes.name }}</h2>
+                <div class="ml-1 w-8">
+                    <img :src="selectedContact.data.attributes.profile_image.data.attributes.path" alt="User avatar" class="w-8 h-8 object-cover rounded-full">
+                </div>
+                <h2 class="ml-3 text-xl font-bold tracking-tight">{{ selectedContact.data.attributes.name }}</h2>
             </div>
 
-            <div class="w-full flex-1 p-4 flex flex-col justify-end overflow-y-scroll">
-
-                <div class="w-full flex items-center justify-start mt-2">
-                    <div class="bg-green-300 py-2 px-3 rounded shadow">
-                        Hello there!
-                    </div>
-                </div>
-
-                <div class="w-full flex items-center justify-end mt-2">
-                    <div class="bg-blue-300 py-2 px-3 rounded shadow">
-                        Hi!
-                    </div>
-                </div>
-
+            <div class="w-full flex-1 overflow-y-scroll">
+                <ChatThread :thread="{
+                    messages: [
+                        {
+                            sender_type: 'me',
+                            body: 'Heyy'
+                        },
+                        {
+                            sender_type: 'other',
+                            sender_img: '/default/profile.png',
+                            body: 'Hello!'
+                        },
+                        {
+                            sender_type: 'other',
+                            sender_img: '/default/profile.png',
+                            body: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis culpa dolorem eaque earum eius harum iure laborum magni molestiae neque odit omnis quas rem sed ullam unde velit veniam, voluptates?'
+                        },
+                        {
+                            sender_type: 'me',
+                            body: 'I\'m not sure tbh'
+                        }
+                    ]
+                }"></ChatThread>
             </div>
-
-            <div class="p-4 flex items-center margin-t w-full">
-                <div class="flex-1 relative">
-                    <input v-model="chatMessage" type="text" name="body" class="w-full pl-4 py-4 pr-10 h-10 rounded-full bg-gray-200 border-2 border-gray-200 focus:border-blue-300 focus:outline-none" placeholder="Write a message">
-                    <button v-if="chatMessage"
-                            class="absolute right-0 top-0 mt-1 mr-1 text-gray-600 hover:text-gray-700 active:text-gray-800 p-0 h-8 w-8 rounded-full focus:outline-none">
-                        <i class="icofont-arrow-right text-3xl"></i>
-                    </button>
-                </div>
-            </div>
-
         </div>
 
     </div>
@@ -57,19 +58,20 @@
 
 <script>
     import ContactRow from './ContactRow';
+    import ChatThread from './ChatThread';
 
     export default {
         name: "Contacts",
 
         components: {
-            ContactRow
+            ContactRow,
+            ChatThread
         },
 
         data() {
             return {
                 friends: [],
                 selectedContact: null,
-                chatMessage: ""
             };
         },
 
