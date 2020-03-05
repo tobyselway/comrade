@@ -18,4 +18,6 @@ Route::middleware('auth:api')->group(function() {
         '/notifications' => 'NotificationController'
     ]);
 
+    Route::post('/users/search', 'UserController@search');
+
 });

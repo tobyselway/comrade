@@ -16,13 +16,29 @@
                         <i class="icofont-search text-gray-500"></i>
                     </div>
                     <input type="text"
+                           v-model="searchQuery"
                            name="search"
                            :placeholder="'Search ' + (appBranding ? (appBranding + ' ') : '') + appName"
+                           @input="search()"
                            autocomplete="off"
                            class="rounded-full pl-8 w-56 h-8 bg-gray-200 border-2 border-gray-200 focus:border-blue-300 focus:outline-none text-sm">
+
+                    <div v-if="foundUsers.length" class="absolute bg-white rounded shadow py-2 mt-1 w-56 z-40">
+
+                        <div v-for="user in foundUsers" @click="closeSearch()">
+                            <router-link :to="'/users/' + user.data.user_id" class="flex items-center h-12 w-full px-3 py-1 hover:bg-gray-200">
+                                <div class="w-8">
+                                    <img :src="user.data.attributes.profile_image.data.attributes.path" alt="User avatar" class="w-8 h-8 object-cover rounded-full">
+                                </div>
+                                <div class="ml-3">{{ user.data.attributes.name }}</div>
+                            </router-link>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
+        <div v-if="foundUsers.length > 0" @click="closeSearch()" class="absolute top-0 left-0 w-screen h-screen z-30"></div>
         <div class="w-1/3 flex justify-center items-center h-full">
             <router-link to="/" class="h-full px-6 border-b-2 group flex items-center hover:border-gray-400" :class="[$route.name === 'home' ? 'border-red-400' : 'border-white']">
                 <i class="icofont-home text-3xl text-gray-500 group-hover:text-gray-700"></i>
@@ -56,6 +72,7 @@
 <script>
     import { mapGetters } from 'vuex';
     import Spinner from './Spinner';
+    import _ from 'lodash';
 
 
     export default {
@@ -70,14 +87,30 @@
                 appBranding: process.env.MIX_APP_BRANDING,
                 appName: process.env.MIX_APP_NAME || "",
                 options: false,
-                loggingOut: false
+                loggingOut: false,
+                searchQuery: "",
+                foundUsers: []
             }
         },
 
         methods: {
-            logout()  {
+            logout() {
                 this.loggingOut = true;
                 document.getElementById('logout-form').submit();
+            },
+            search: _.debounce(function() {
+                axios.post('/api/users/search', { q: this.searchQuery })
+                .then(res => {
+                    this.foundUsers = res.data.data;
+                })
+                .catch(err => {
+                    this.foundUsers = [];
+                    this.searchQuery = "";
+                });
+            }, 200),
+            closeSearch() {
+                this.foundUsers = [];
+                this.searchQuery = "";
             }
         },
 
